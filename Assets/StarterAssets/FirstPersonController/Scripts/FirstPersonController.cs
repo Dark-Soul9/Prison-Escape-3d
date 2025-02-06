@@ -115,6 +115,7 @@ namespace StarterAssets
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
+			Crouch();
 		}
 
 		private void LateUpdate()
@@ -243,6 +244,13 @@ namespace StarterAssets
 			if (_verticalVelocity < _terminalVelocity)
 			{
 				_verticalVelocity += Gravity * Time.deltaTime;
+			}
+		}
+		private void Crouch()
+		{
+			if(Grounded && _input.crouch)
+			{
+				Debug.Log("I am crouching");
 			}
 		}
 
