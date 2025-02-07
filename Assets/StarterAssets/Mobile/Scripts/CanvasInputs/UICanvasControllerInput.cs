@@ -27,7 +27,11 @@ namespace StarterAssets
         {
             starterAssetsInputs.SprintInput(virtualSprintState);
         }
-        
+        public void VirtualSneakInput(bool virtualSneakState)
+        {
+            starterAssetsInputs.SneakInput(virtualSneakState);
+        }
+
     }
 
 }

@@ -12,7 +12,7 @@ namespace StarterAssets
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
-		public bool crouch;
+		public bool sneak;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -44,9 +44,9 @@ namespace StarterAssets
 		{
 			SprintInput(value.isPressed);
 		}
-		public void OnCrouch(InputValue value)
+		public void OnSneak(InputValue value)
 		{
-			CrouchInput(value.isPressed);
+			SneakInput(value.isPressed);
 		}
 #endif
 
@@ -70,9 +70,9 @@ namespace StarterAssets
 		{
 			sprint = newSprintState;
 		}
-		public void CrouchInput(bool newCrouchState)
+		public void SneakInput(bool newSneakState)
 		{
-			crouch = newCrouchState;
+			sneak = newSneakState;
 		}
 		
 		private void OnApplicationFocus(bool hasFocus)

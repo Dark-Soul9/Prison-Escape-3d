@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -12,7 +13,9 @@ namespace StarterAssets
 	public class FirstPersonController : MonoBehaviour
 	{
 		[Header("Player")]
-		[Tooltip("Move speed of the character in m/s")]
+        [Tooltip("Sneak speed of the character in m/s")]
+        public float SneakSpeed = 1.5f;
+        [Tooltip("Move speed of the character in m/s")]
 		public float MoveSpeed = 4.0f;
 		[Tooltip("Sprint speed of the character in m/s")]
 		public float SprintSpeed = 6.0f;
@@ -21,7 +24,15 @@ namespace StarterAssets
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
 
-		[Space(10)]
+        [Space(10)]
+        [Tooltip("The maximum stamina of the player")]
+        public float maxStamina = 5f;
+        [Tooltip("RegenRate for stamina")]
+        public float staminaRegenRate = 1f;
+        [Tooltip("Cooldown before regenerating")]
+        public float sprintCooldownTime = 2f; 
+
+        [Space(10)]
 		[Tooltip("The height the player can jump")]
 		public float JumpHeight = 1.2f;
 		[Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
@@ -56,13 +67,16 @@ namespace StarterAssets
 
 		// player
 		private float _speed;
-		private float _rotationVelocity;
+        private float _stamina;
+        private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
 
-		// timeout deltatime
-		private float _jumpTimeoutDelta;
+        // timeout deltatime
+        private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
+
+		public TextMeshProUGUI staminaUI;
 
 	
 #if ENABLE_INPUT_SYSTEM
@@ -93,7 +107,8 @@ namespace StarterAssets
 			{
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
-		}
+            _stamina = maxStamina;
+        }
 
 		private void Start()
 		{
@@ -115,8 +130,8 @@ namespace StarterAssets
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
-			Crouch();
-		}
+            HandleStamina();
+        }
 
 		private void LateUpdate()
 		{
@@ -155,7 +170,20 @@ namespace StarterAssets
 		private void Move()
 		{
 			// set target speed based on move speed, sprint speed and if sprint is pressed
-			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+			float targetSpeed;
+
+			if(_input.sneak)
+			{
+				targetSpeed = SneakSpeed;
+			}
+			else if(_input.sprint && _stamina>0)
+			{
+                targetSpeed = SprintSpeed;
+            }
+			else
+			{
+				targetSpeed = MoveSpeed;
+			}
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -246,15 +274,24 @@ namespace StarterAssets
 				_verticalVelocity += Gravity * Time.deltaTime;
 			}
 		}
-		private void Crouch()
-		{
-			if(Grounded && _input.crouch)
-			{
-				Debug.Log("I am crouching");
-			}
-		}
+        void HandleStamina()
+        {
+            if (_input.sprint && _stamina > 0)
+            {
+                _stamina -= Time.deltaTime; // Drain stamina
+                if (_stamina <= 0)
+                {
+                    _stamina = 0;
+                }
+            }
+            else if (!_input.sprint && _stamina < maxStamina)
+            {
+                _stamina += staminaRegenRate * Time.deltaTime; // Regenerate stamina
+            }
+			staminaUI.text = "Stamina: " + _stamina;
+        }
 
-		private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
+        private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
 		{
 			if (lfAngle < -360f) lfAngle += 360f;
 			if (lfAngle > 360f) lfAngle -= 360f;
