@@ -1,4 +1,4 @@
-﻿using TMPro;
+﻿using UnityEngine.UI;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -30,7 +30,9 @@ namespace StarterAssets
         [Tooltip("RegenRate for stamina")]
         public float staminaRegenRate = 1f;
         [Tooltip("Cooldown before regenerating")]
-        public float sprintCooldownTime = 2f; 
+        public float sprintCooldownTime = 2f;
+		[Tooltip("Stamina Depletion Rate")]
+		public float staminaDepletionRate;
 
         [Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -76,7 +78,7 @@ namespace StarterAssets
         private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
 
-		public TextMeshProUGUI staminaUI;
+		public Slider staminaSlider;
 
 	
 #if ENABLE_INPUT_SYSTEM
@@ -278,7 +280,7 @@ namespace StarterAssets
         {
             if (_input.sprint && _stamina > 0)
             {
-                _stamina -= Time.deltaTime; // Drain stamina
+                _stamina -= staminaDepletionRate * Time.deltaTime; // Drain stamina
                 if (_stamina <= 0)
                 {
                     _stamina = 0;
@@ -288,7 +290,7 @@ namespace StarterAssets
             {
                 _stamina += staminaRegenRate * Time.deltaTime; // Regenerate stamina
             }
-			staminaUI.text = "Stamina: " + _stamina;
+			staminaSlider.value = _stamina;
         }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
