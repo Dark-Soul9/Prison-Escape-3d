@@ -1,5 +1,7 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
+using System.Collections;
+
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -70,6 +72,7 @@ namespace StarterAssets
 		// player
 		private float _speed;
         private float _stamina;
+		private float _currentSprintTimerCount;
         private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
@@ -87,6 +90,7 @@ namespace StarterAssets
 		private CharacterController _controller;
 		private StarterAssetsInputs _input;
 		private GameObject _mainCamera;
+		private PlayerStates playerStates;
 
 		private const float _threshold = 0.01f;
 
@@ -109,6 +113,7 @@ namespace StarterAssets
 			{
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
+			playerStates = GetComponent<PlayerStates>();
             _stamina = maxStamina;
         }
 
@@ -177,14 +182,17 @@ namespace StarterAssets
 			if(_input.sneak)
 			{
 				targetSpeed = SneakSpeed;
+				playerStates.Sneak();
 			}
 			else if(_input.sprint && _stamina>0)
 			{
                 targetSpeed = SprintSpeed;
+				playerStates.Sprint();
             }
 			else
 			{
 				targetSpeed = MoveSpeed;
+				playerStates.ReturnToNormal();
 			}
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
@@ -280,18 +288,33 @@ namespace StarterAssets
         {
             if (_input.sprint && _stamina > 0)
             {
+                _currentSprintTimerCount = 0;
                 _stamina -= staminaDepletionRate * Time.deltaTime; // Drain stamina
                 if (_stamina <= 0)
                 {
                     _stamina = 0;
+					playerStates.ReturnToNormal();
                 }
             }
-            else if (!_input.sprint && _stamina < maxStamina)
-            {
-                _stamina += staminaRegenRate * Time.deltaTime; // Regenerate stamina
+			else if (!_input.sprint && _stamina < maxStamina)
+			{
+				SprintTimer();
             }
 			staminaSlider.value = _stamina;
         }
+		void SprintTimer()
+		{
+			if(_currentSprintTimerCount > sprintCooldownTime)
+			{
+                //Debug.Log($"Actually Regenerating Stamina {_currentSprintTimerCount}");
+				_stamina += staminaRegenRate * Time.deltaTime; // Regenerate stamina
+            }
+			else
+			{
+                //Debug.Log($"Regenerating Sprint {_currentSprintTimerCount}");
+                _currentSprintTimerCount = _currentSprintTimerCount + Time.deltaTime;
+            }
+		}
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
 		{
