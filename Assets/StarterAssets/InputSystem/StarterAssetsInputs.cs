@@ -13,6 +13,7 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool sneak;
+		public bool interact;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -48,6 +49,10 @@ namespace StarterAssets
 		{
 			SneakInput(value.isPressed);
 		}
+		public void OnInteract(InputValue value)
+		{
+			InteractInput(value.isPressed);
+		}
 #endif
 
 
@@ -73,6 +78,10 @@ namespace StarterAssets
 		public void SneakInput(bool newSneakState)
 		{
 			sneak = newSneakState;
+		}
+		public void InteractInput(bool newInteractState)
+		{
+			interact = newInteractState;
 		}
 		
 		private void OnApplicationFocus(bool hasFocus)

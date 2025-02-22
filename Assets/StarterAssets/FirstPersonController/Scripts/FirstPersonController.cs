@@ -286,7 +286,7 @@ namespace StarterAssets
 		}
         void HandleStamina()
         {
-            if (_input.sprint && _stamina > 0)
+            if (_input.sprint && _stamina > 0 && playerStates.currentState == PlayerStates.States.sprinting)
             {
                 _currentSprintTimerCount = 0;
                 _stamina -= staminaDepletionRate * Time.deltaTime; // Drain stamina

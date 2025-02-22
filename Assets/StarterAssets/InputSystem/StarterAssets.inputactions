@@ -49,6 +49,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Interact",
+                    "type": "PassThrough",
+                    "id": "91b423ff-63b5-4b04-b3e8-55ba778ce94b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -236,6 +245,17 @@
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Sneak",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1c8fd9f-6336-418b-beea-bdd9f27ee00b",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyboardMouse",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
