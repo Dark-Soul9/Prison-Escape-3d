@@ -1,5 +1,6 @@
 using StarterAssets;
 using UnityEngine;
+using UnityEngine.InputSystem;
 public class PlayerInteraction : MonoBehaviour
 {
     public float interactionRange = 2f; // How far the player can interact
@@ -17,6 +18,17 @@ public class PlayerInteraction : MonoBehaviour
         if(_input.interact)
         {
             TryInteract();
+            _input.interact = false;
+        }
+        if(_input.inventory)
+        {
+            ShowInventory();
+            _input.inventory = false;
+        }
+        if(_input.fire)
+        {
+            WeaponManager.Instance.FireWeapon();
+            _input.fire = false;
         }
     }
     void TryInteract()
@@ -30,5 +42,9 @@ public class PlayerInteraction : MonoBehaviour
                 interactable.Interact();
             }
         }   
+    }
+    void ShowInventory()
+    {
+        InventoryManager.Instance.ShowInventory();
     }
 }

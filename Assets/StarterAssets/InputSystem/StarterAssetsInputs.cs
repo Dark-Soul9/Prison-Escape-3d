@@ -14,6 +14,8 @@ namespace StarterAssets
 		public bool sprint;
 		public bool sneak;
 		public bool interact;
+		public bool inventory;
+		public bool fire;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -53,6 +55,14 @@ namespace StarterAssets
 		{
 			InteractInput(value.isPressed);
 		}
+		public void OnInventory(InputValue value)
+		{
+			InventoryInput(value.isPressed);
+		}
+		public void OnFire(InputValue value)
+		{
+			FireInput(value.isPressed);
+		}
 #endif
 
 
@@ -82,6 +92,14 @@ namespace StarterAssets
 		public void InteractInput(bool newInteractState)
 		{
 			interact = newInteractState;
+		}
+		public void InventoryInput(bool newInventoryState)
+		{
+			inventory = newInventoryState;
+		}
+		public void FireInput(bool newFireState)
+		{
+			fire = newFireState;
 		}
 		
 		private void OnApplicationFocus(bool hasFocus)
