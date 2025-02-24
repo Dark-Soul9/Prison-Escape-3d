@@ -1,5 +1,6 @@
-﻿using TMPro;
+﻿using UnityEngine.UI;
 using UnityEngine;
+
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -30,7 +31,9 @@ namespace StarterAssets
         [Tooltip("RegenRate for stamina")]
         public float staminaRegenRate = 1f;
         [Tooltip("Cooldown before regenerating")]
-        public float sprintCooldownTime = 2f; 
+        public float sprintCooldownTime = 2f;
+		[Tooltip("Stamina Depletion Rate")]
+		public float staminaDepletionRate;
 
         [Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -68,6 +71,7 @@ namespace StarterAssets
 		// player
 		private float _speed;
         private float _stamina;
+		private float _currentSprintTimerCount;
         private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
@@ -76,7 +80,7 @@ namespace StarterAssets
         private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
 
-		public TextMeshProUGUI staminaUI;
+		public Slider staminaSlider;
 
 	
 #if ENABLE_INPUT_SYSTEM
@@ -85,6 +89,7 @@ namespace StarterAssets
 		private CharacterController _controller;
 		private StarterAssetsInputs _input;
 		private GameObject _mainCamera;
+		private PlayerStates playerStates;
 
 		private const float _threshold = 0.01f;
 
@@ -107,6 +112,7 @@ namespace StarterAssets
 			{
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
+			playerStates = GetComponent<PlayerStates>();
             _stamina = maxStamina;
         }
 
@@ -175,14 +181,17 @@ namespace StarterAssets
 			if(_input.sneak)
 			{
 				targetSpeed = SneakSpeed;
+				playerStates.Sneak();
 			}
 			else if(_input.sprint && _stamina>0)
 			{
                 targetSpeed = SprintSpeed;
+				playerStates.Sprint();
             }
 			else
 			{
 				targetSpeed = MoveSpeed;
+				playerStates.ReturnToNormal();
 			}
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
@@ -276,20 +285,35 @@ namespace StarterAssets
 		}
         void HandleStamina()
         {
-            if (_input.sprint && _stamina > 0)
+            if (_input.sprint && _stamina > 0 && playerStates.currentState == PlayerStates.States.sprinting)
             {
-                _stamina -= Time.deltaTime; // Drain stamina
+                _currentSprintTimerCount = 0;
+                _stamina -= staminaDepletionRate * Time.deltaTime; // Drain stamina
                 if (_stamina <= 0)
                 {
                     _stamina = 0;
+					playerStates.ReturnToNormal();
                 }
             }
-            else if (!_input.sprint && _stamina < maxStamina)
-            {
-                _stamina += staminaRegenRate * Time.deltaTime; // Regenerate stamina
+			else if (!_input.sprint && _stamina < maxStamina)
+			{
+				SprintTimer();
             }
-			staminaUI.text = "Stamina: " + _stamina;
+			staminaSlider.value = _stamina;
         }
+		void SprintTimer()
+		{
+			if(_currentSprintTimerCount > sprintCooldownTime)
+			{
+                //Debug.Log($"Actually Regenerating Stamina {_currentSprintTimerCount}");
+				_stamina += staminaRegenRate * Time.deltaTime; // Regenerate stamina
+            }
+			else
+			{
+                //Debug.Log($"Regenerating Sprint {_currentSprintTimerCount}");
+                _currentSprintTimerCount = _currentSprintTimerCount + Time.deltaTime;
+            }
+		}
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
 		{
