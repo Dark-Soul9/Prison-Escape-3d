@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerStates : MonoBehaviour
 {
-    public enum States { normal, sneaking, sprinting}
+    public enum States { walking, sneaking, sprinting, idle}
     public States currentState;
 
     public void Sprint()
@@ -15,9 +15,13 @@ public class PlayerStates : MonoBehaviour
         currentState = States.sneaking;
         //Debug.Log("Sneaking");
     }
-    public void ReturnToNormal()
+    public void Walk()
     {
-        currentState = States.normal;
+        currentState = States.walking;
         //Debug.Log("Normal");
+    }
+    public void Idle()
+    {
+        currentState = States.idle;
     }
 }

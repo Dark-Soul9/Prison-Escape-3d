@@ -1,5 +1,7 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
+using UnityEditor;
+
 
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -191,14 +193,18 @@ namespace StarterAssets
 			else
 			{
 				targetSpeed = MoveSpeed;
-				playerStates.ReturnToNormal();
+				playerStates.Walk();
 			}
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
 			// note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
 			// if there is no input, set the target speed to 0
-			if (_input.move == Vector2.zero) targetSpeed = 0.0f;
+			if (_input.move == Vector2.zero)
+			{
+				targetSpeed = 0.0f;
+				playerStates.Idle();
+			}
 
 			// a reference to the players current horizontal velocity
 			float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -292,7 +298,7 @@ namespace StarterAssets
                 if (_stamina <= 0)
                 {
                     _stamina = 0;
-					playerStates.ReturnToNormal();
+					playerStates.Walk();
                 }
             }
 			else if (!_input.sprint && _stamina < maxStamina)
@@ -313,6 +319,14 @@ namespace StarterAssets
                 //Debug.Log($"Regenerating Sprint {_currentSprintTimerCount}");
                 _currentSprintTimerCount = _currentSprintTimerCount + Time.deltaTime;
             }
+		}
+		public float GetCurrentSpeed()
+		{
+			return _speed; // Get movement speed
+        }
+		public PlayerStates GetCurrentState()
+		{
+			return playerStates;
 		}
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
