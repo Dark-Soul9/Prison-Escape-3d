@@ -1297,7 +1297,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ab52527fbb63194b9a76189387eb737, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponPrefab: {fileID: 2226662716328271919, guid: 8f9fecc906f437940b7e267572455828,
+  weaponPrefab: {fileID: 8301498444020711457, guid: 19857017ba8ce854890ee07ffaef5e5c,
     type: 3}
 --- !u!4 &1433254294
 Transform:
