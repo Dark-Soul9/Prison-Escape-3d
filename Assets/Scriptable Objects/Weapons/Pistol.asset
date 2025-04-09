@@ -24,3 +24,6 @@ MonoBehaviour:
     type: 3}
   magazineSize: 12
   reloadTime: 1.2
+  positionOffset: {x: 0.81, y: 0, z: 2.65}
+  rotationOffset: {x: 0, y: -94.12, z: 1.6}
+  scaleOffset: {x: 1, y: 1, z: 1}

@@ -29,4 +29,9 @@ public class WeaponData : ScriptableObject
     [Header("Ammo")]
     public int magazineSize = 10;
     public float reloadTime = 1.5f;
+
+    [Header("Weapon Positioning Offsets")]
+    public Vector3 positionOffset;
+    public Vector3 rotationOffset;
+    public Vector3 scaleOffset = Vector3.one;
 }

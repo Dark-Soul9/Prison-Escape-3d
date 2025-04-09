@@ -18,9 +18,12 @@ MonoBehaviour:
   damage: 90
   recoilAmount: 3
   hasScope: 1
-  scopedFOV: 20
+  scopedFOV: 10
   aimSpeed: 6
   weaponPrefab: {fileID: 4580727241047414574, guid: d6394f42b42cc404eac1735fa999d0a8,
     type: 3}
   magazineSize: 5
   reloadTime: 2.5
+  positionOffset: {x: 0.67, y: -0.345, z: 1.91}
+  rotationOffset: {x: 0, y: -90, z: 0}
+  scaleOffset: {x: 1, y: 1, z: 1}

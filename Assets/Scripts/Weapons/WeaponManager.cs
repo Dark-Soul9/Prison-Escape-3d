@@ -6,7 +6,7 @@ public class WeaponManager : MonoBehaviour
 
     public Transform weaponHolder; // Assign this to the player's hand in Unity
     private GameObject currentWeapon;
-    private Weapon currentWeaponScript;
+    private WeaponBehavior currentWeaponScript;
 
     void Awake()
     {
@@ -22,27 +22,25 @@ public class WeaponManager : MonoBehaviour
             Destroy(currentWeapon); // Remove old weapon
         
         currentWeapon = Instantiate(weaponPrefab, weaponHolder);
-        currentWeaponScript = currentWeapon.GetComponent<Weapon>();
-
-        ApplyWeaponOffsets();
-
-        Debug.Log($"Equipped: {currentWeaponScript.weaponName}");
+        currentWeaponScript = currentWeapon.GetComponent<WeaponBehavior>();
+        currentWeaponScript.WeaponData();
+        currentWeaponScript.ApplyWeaponOffsets();
     }
 
-    public void FireWeapon()
+    public void HandleWeapon()
     {
         if (currentWeapon != null)
         {
-            currentWeapon.GetComponent<Weapon>().Fire();
+            //currentWeapon.GetComponent<WeaponBehavior>().HandleWeaponInput();
+            //currentWeapon.GetComponent<WeaponBehavior>().HandleWeaponInput();
         }
     }
-    private void ApplyWeaponOffsets()
+    public void HandleAim(bool input)
     {
-        if (currentWeaponScript == null) return;
-
-        // Apply offsets
-        currentWeapon.transform.localPosition = currentWeaponScript.positionOffset;
-        currentWeapon.transform.localRotation = Quaternion.Euler(currentWeaponScript.rotationOffset);
-        currentWeapon.transform.localScale = currentWeaponScript.scaleOffset;
+        if(currentWeapon != null)
+        {
+            currentWeapon.GetComponent<WeaponBehavior>().HandleWeaponAiming(input);
+        }
     }
+    
 }
