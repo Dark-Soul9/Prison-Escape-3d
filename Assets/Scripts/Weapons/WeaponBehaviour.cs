@@ -1,6 +1,6 @@
 using Cinemachine;
 using UnityEngine;
-using UnityEngine.Windows;
+using UnityEngine.UIElements;
 
 public class WeaponBehavior : MonoBehaviour
 {
@@ -10,8 +10,9 @@ public class WeaponBehavior : MonoBehaviour
     [Header("References")]
     public Transform weaponMuzzle; // Point where bullets come out
     public CinemachineVirtualCamera virtualCamera;
-    private float fireCooldown;
+    private float fireCooldown = 0f;
     private int currentAmmo;
+    [SerializeField] private LayerMask damageableLayers;
 
     private bool isAiming = false;
     private float originalFOV;
@@ -43,61 +44,66 @@ public class WeaponBehavior : MonoBehaviour
 
     private void Update()
     {
-        HandleAiming(isAiming);
         fireCooldown -= Time.deltaTime;
+        HandleAiming(isAiming);
     }
-    /*
-    public void HandleWeaponInput()
+    public void HandleWeaponInput(bool isFiring)
     {
-        // Firing
+        if (!canShoot || currentAmmo <= 0) return;
+
         if (weaponData.fireMode == FireMode.SemiAuto)
         {
-            if (Input.GetButtonDown("Fire1") && fireCooldown <= 0f && canShoot)
+            if (isFiring && fireCooldown <= 0f)
+            {
                 Fire();
+            }
         }
         else if (weaponData.fireMode == FireMode.Automatic)
         {
-            if (Input.GetButton("Fire1") && fireCooldown <= 0f && canShoot)
+            if (isFiring && fireCooldown <= 0f)
+            {
                 Fire();
+            }
         }
     }
-    */
     public void HandleWeaponAiming(bool aimInput)
     {
         isAiming = aimInput;
-        Debug.Log("Input pressed is " + isAiming);
+        //Debug.Log("Input pressed is " + isAiming);
     }
 
     private void Fire()
     {
-        if (currentAmmo <= 0)
-        {
-            Debug.Log("Out of ammo!");
-            return;
-        }
-
-        Debug.Log($"Fired {weaponData.weaponName}! Damage: {weaponData.damage}");
-
         currentAmmo--;
         fireCooldown = weaponData.fireRate;
 
-        // You can later add effects here (muzzle flash, sounds, recoil)
+        // Raycast to simulate bullet hit (hitscan style)
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0));
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, weaponData.range))
+        {
+            Debug.Log($"Hit {hitInfo.collider.name}");
+
+            // TODO: Add damage logic
+            IDamageable damageable = hitInfo.collider.GetComponent<IDamageable>();
+            if (damageable != null)
+            {
+                damageable.TakeDamage(weaponData.damage);
+            }
+
+
+            // TODO: Add impact effects
+        }
+
+        // TODO: Muzzle flash, audio, recoil, camera shake etc.
+
+        Debug.Log($"Fired {weaponData.weaponName}. Ammo left: {currentAmmo}");
     }
+
 
     private void HandleAiming(bool aimInput)
     {
         float targetFOV = (aimInput && weaponData.hasScope) ? weaponData.scopedFOV : originalFOV;
         virtualCamera.m_Lens.FieldOfView = Mathf.Lerp(virtualCamera.m_Lens.FieldOfView, targetFOV, Time.deltaTime * weaponData.aimSpeed);
-        /*
-        if (aimInput && weaponData.hasScope)
-        {
-            virtualCamera.m_Lens.FieldOfView = weaponData.scopedFOV;
-        }
-        else
-        {
-            virtualCamera.m_Lens.FieldOfView = originalFOV;
-        }
-        */
     }
 
 

@@ -135,12 +135,13 @@ namespace StarterAssets
         public void FireInput(bool newFireState)
         {
             fire = newFireState;
+            Debug.Log("Fire is now: " + fire);
         }
 
         public void AimInput(bool newAimState)
         {
             aim = newAimState;
-            Debug.Log("Aim is now: " + aim);
+            
         }
 
         private void OnApplicationFocus(bool hasFocus)

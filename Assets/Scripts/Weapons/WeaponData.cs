@@ -14,6 +14,7 @@ public class WeaponData : ScriptableObject
     public FireMode fireMode = FireMode.SemiAuto;
     public float fireRate = 0.2f; // Time between shots
     public float damage = 10f;
+    public float range;
 
     [Header("Recoil")]
     public float recoilAmount = 1f;

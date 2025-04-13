@@ -692,4 +692,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: a91215c2154e76745915626690f435fd, type: 2}
   weaponMuzzle: {fileID: 6999302551876694220}
-  playerCamera: {fileID: 0}
+  virtualCamera: {fileID: 0}
+  damageableLayers:
+    serializedVersion: 2
+    m_Bits: 512

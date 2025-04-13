@@ -27,12 +27,11 @@ public class WeaponManager : MonoBehaviour
         currentWeaponScript.ApplyWeaponOffsets();
     }
 
-    public void HandleWeapon()
+    public void HandleWeaponInput(bool isFiring)
     {
         if (currentWeapon != null)
         {
-            //currentWeapon.GetComponent<WeaponBehavior>().HandleWeaponInput();
-            //currentWeapon.GetComponent<WeaponBehavior>().HandleWeaponInput();
+            currentWeapon.GetComponent<WeaponBehavior>().HandleWeaponInput(isFiring);
         }
     }
     public void HandleAim(bool input)

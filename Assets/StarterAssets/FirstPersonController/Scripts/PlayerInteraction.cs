@@ -25,11 +25,7 @@ public class PlayerInteraction : MonoBehaviour
             ShowInventory();
             _input.inventory = false;
         }
-        if(_input.fire)
-        {
-            WeaponManager.Instance.HandleWeapon();
-            _input.fire = false;
-        }
+        WeaponManager.Instance.HandleWeaponInput(_input.fire);
         WeaponManager.Instance.HandleAim(_input.aim);
     }
     void TryInteract()

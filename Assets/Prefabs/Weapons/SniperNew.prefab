@@ -211,6 +211,9 @@ MonoBehaviour:
   weaponData: {fileID: 11400000, guid: ee14147d88ef0f84fadffd6d604fd344, type: 2}
   weaponMuzzle: {fileID: 6317584890692709932}
   virtualCamera: {fileID: 0}
+  damageableLayers:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &4744524120628482822
 GameObject:
   m_ObjectHideFlags: 0
