@@ -18,6 +18,8 @@ namespace StarterAssets
         public bool inventory;
         public bool fire;
         public bool aim;
+        public bool reload;
+        public bool scrollWeapon;
 
         [Header("Movement Settings")]
         public bool analogMovement;
@@ -39,6 +41,22 @@ namespace StarterAssets
                 LookInput(context.ReadValue<Vector2>());
             }
         }
+        public void OnScroll(InputAction.CallbackContext context)
+        {
+            float scrollValue = context.ReadValue<Vector2>().y;
+
+            if (scrollValue > 0)
+                ScrollInput(true);
+            else if (scrollValue < 0)
+                ScrollInput(false);
+        }
+
+        public void OnNumberKey(InputAction.CallbackContext context)
+        {
+            int keyPressed = Mathf.FloorToInt(context.ReadValue<float>()); // Assuming you map 1–5 keys as actions
+            //inventory.SwitchWeaponByNumber(keyPressed);
+        }
+
 
         public void OnJump(InputAction.CallbackContext context)
         {
@@ -95,6 +113,13 @@ namespace StarterAssets
             else if (context.canceled)
                 AimInput(false);
         }
+        public void OnReload(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+                ReloadInput(true);
+            else if (context.canceled)
+                ReloadInput(false);
+        }
 #endif
 
         public void MoveInput(Vector2 newMoveDirection)
@@ -135,13 +160,22 @@ namespace StarterAssets
         public void FireInput(bool newFireState)
         {
             fire = newFireState;
-            Debug.Log("Fire is now: " + fire);
         }
 
         public void AimInput(bool newAimState)
         {
             aim = newAimState;
             
+        }
+        public void ReloadInput(bool newReloadState)
+        {
+            reload = newReloadState;
+            Debug.Log("Reload Pressed: " + reload);
+        }
+        public void ScrollInput(bool newScrollState)
+        {
+            scrollWeapon = newScrollState;
+            Debug.Log("Scroll is: " + scrollWeapon);
         }
 
         private void OnApplicationFocus(bool hasFocus)

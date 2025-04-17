@@ -15,6 +15,7 @@ public class WeaponData : ScriptableObject
     public float fireRate = 0.2f; // Time between shots
     public float damage = 10f;
     public float range;
+    public WeaponSlotType weaponType;
 
     [Header("Recoil")]
     public float recoilAmount = 1f;

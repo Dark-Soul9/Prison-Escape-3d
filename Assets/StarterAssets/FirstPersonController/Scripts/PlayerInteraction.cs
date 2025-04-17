@@ -1,6 +1,5 @@
 using StarterAssets;
 using UnityEngine;
-using UnityEngine.InputSystem;
 public class PlayerInteraction : MonoBehaviour
 {
     public float interactionRange = 2f; // How far the player can interact
@@ -25,6 +24,11 @@ public class PlayerInteraction : MonoBehaviour
             ShowInventory();
             _input.inventory = false;
         }
+        if(_input.reload)
+        {
+            Reload();
+        }
+        WeaponInventory.Instance.SwitchWeaponByScroll(_input.scrollWeapon);
         WeaponManager.Instance.HandleWeaponInput(_input.fire);
         WeaponManager.Instance.HandleAim(_input.aim);
     }
@@ -43,5 +47,17 @@ public class PlayerInteraction : MonoBehaviour
     void ShowInventory()
     {
         InventoryManager.Instance.ShowInventory();
+    }
+    void Reload()
+    {
+        WeaponManager.Instance.HandleWeaponReload();
+    }
+    void SwitchWeaponByScroll(bool scrollInput)
+    {
+        
+    }
+    void SwitchWeaponByNumber()
+    {
+
     }
 }

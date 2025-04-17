@@ -1,6 +1,6 @@
 using Cinemachine;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class WeaponBehavior : MonoBehaviour
 {
@@ -17,6 +17,7 @@ public class WeaponBehavior : MonoBehaviour
     private bool isAiming = false;
     private float originalFOV;
     private bool canShoot = true;
+    private bool isReloading = false;
 
     private void OnEnable()
     {
@@ -49,6 +50,11 @@ public class WeaponBehavior : MonoBehaviour
     }
     public void HandleWeaponInput(bool isFiring)
     {
+        if (isReloading)
+        {
+            isFiring = false;
+            return;
+        }
         if (!canShoot || currentAmmo <= 0) return;
 
         if (weaponData.fireMode == FireMode.SemiAuto)
@@ -68,6 +74,11 @@ public class WeaponBehavior : MonoBehaviour
     }
     public void HandleWeaponAiming(bool aimInput)
     {
+        if (isReloading)
+        {
+            isAiming = false;
+            return;
+        }
         isAiming = aimInput;
         //Debug.Log("Input pressed is " + isAiming);
     }
@@ -109,8 +120,10 @@ public class WeaponBehavior : MonoBehaviour
 
     public void Reload()
     {
-        currentAmmo = weaponData.magazineSize;
-        Debug.Log("Reloaded!");
+        if (isReloading == false && currentAmmo < weaponData.magazineSize)
+        {
+            StartCoroutine(ReloadRoutine());
+        }
     }
     public void WeaponData()
     {
@@ -124,5 +137,17 @@ public class WeaponBehavior : MonoBehaviour
         this.transform.localPosition = weaponData.positionOffset;
         this.transform.localRotation = Quaternion.Euler(weaponData.rotationOffset);
         this.transform.localScale = weaponData.scaleOffset;
+    }
+    IEnumerator ReloadRoutine()
+    {
+        if(isReloading)
+        {
+            StopCoroutine(ReloadRoutine());
+        }
+        isReloading = true;
+        yield return new WaitForSeconds(weaponData.reloadTime);
+        isReloading = false;
+        currentAmmo = weaponData.magazineSize;
+        Debug.Log("Reloaded!");
     }
 }

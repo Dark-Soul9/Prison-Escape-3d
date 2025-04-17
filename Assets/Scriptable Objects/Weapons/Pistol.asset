@@ -17,6 +17,7 @@ MonoBehaviour:
   fireRate: 0.4
   damage: 25
   range: 20
+  weaponType: 2
   recoilAmount: 1
   hasScope: 0
   scopedFOV: 0

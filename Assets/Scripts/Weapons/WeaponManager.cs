@@ -18,13 +18,14 @@ public class WeaponManager : MonoBehaviour
 
     public void EquipWeapon(GameObject weaponPrefab)
     {
-        if (currentWeapon != null)
-            Destroy(currentWeapon); // Remove old weapon
+        //if (currentWeapon != null)
+            //Destroy(currentWeapon); // Remove old weapon
         
         currentWeapon = Instantiate(weaponPrefab, weaponHolder);
         currentWeaponScript = currentWeapon.GetComponent<WeaponBehavior>();
         currentWeaponScript.WeaponData();
         currentWeaponScript.ApplyWeaponOffsets();
+        WeaponInventory.Instance.AddWeapon(currentWeaponScript.weaponData.weaponType, currentWeaponScript);
     }
 
     public void HandleWeaponInput(bool isFiring)
@@ -39,6 +40,13 @@ public class WeaponManager : MonoBehaviour
         if(currentWeapon != null)
         {
             currentWeapon.GetComponent<WeaponBehavior>().HandleWeaponAiming(input);
+        }
+    }
+    public void HandleWeaponReload()
+    {
+        if(currentWeapon != null)
+        {
+            currentWeapon.GetComponent<WeaponBehavior>().Reload();
         }
     }
     
